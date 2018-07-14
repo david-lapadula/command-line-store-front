@@ -138,3 +138,8 @@ function processRequest() {
 		}
 	);
 }
+
+
+// SELECT * FROM departments D
+// LEFT OUTER JOIN (SELECT department_name, sum(product_sales) AS product_sales FROM products GROUP BY department_name) P
+// ON P.department_name = D.department_name; 

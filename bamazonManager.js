@@ -212,20 +212,35 @@ function addNewProduct() {
                 }
             }
         ])
-        .then(answers => {
+        .then(answers => { 
             connection.query(
-                "INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",
-                [
-                  answers.productAdded, 
-                  answers.departmentAdded, 
-                  answers.itemPrice, 
-                  answers.itemAmount, 
-
-                ],
+                "SELECT EXISTS (SELECT * FROM products WHERE ?) AS department",
+                {
+                    department_name: answers.departmentAdded
+                },
                 function (err, res) {
                     if (err) throw err;
-                    console.log(`\r\n Product Added\r\n`);
-                    // recall the function to display the table if the user wants to place another order. End the connection otherwise
+                    if(res[0].department === 0) {
+                        console.log('Sorry, that department does not exist! Only supervisors have the ability to add a department'); 
+                        newRequest(); 
+                    } else {
+                        connection.query(
+                            "INSERT INTO products(product_name, department_name, price, stock_quantity) VALUES (?, ?, ?, ?)",
+                            [
+                              answers.productAdded, 
+                              answers.departmentAdded, 
+                              answers.itemPrice, 
+                              answers.itemAmount, 
+            
+                            ],
+                            function (err, res) {
+                                if (err) throw err;
+                                console.log(`\r\n Product Added\r\n`);
+                              newRequest(); 
+                            }
+                        );
+
+                    }
                 }
             );
         });  

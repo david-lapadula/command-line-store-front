@@ -2,7 +2,7 @@ let mysql = require('mysql');
 let inquirer = require('inquirer');
 let Table = require('cli-table2');
 let connection = mysql.createConnection({
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'root',
     password: 'password',
     database: 'bamazon',
@@ -42,6 +42,34 @@ function supervisorDuty() {
 }
 
 function viewProductSales() {
+    connection.query(
+        `SELECT D.department_id, D.department_name, D.over_head_costs, P.product_sales,
+        (P.product_sales - over_head_costs) AS total_profit
+        FROM departments D
+        LEFT JOIN (SELECT department_name, sum(product_sales) AS product_sales FROM products GROUP BY department_name) P
+        ON P.department_name = D.department_name`,
+        function (err, res) {
+            if (err) throw err;
+            console.log(res);
+            // recall the function to display the table if the user wants to place another order. End the connection otherwise
+            let keys = Object.keys(res[0]);
+            console.log(keys)
+            // Table to display the current inventory of what is in the database
+            table = new Table({
+                head: [keys[0], keys[1], keys[2], keys[3], keys[4]]
+                , colWidths: [25, 25, 25]
+            });
+
+            for (let item in res) {
+                table.push(
+                    [res[item].department_id, res[item].department_name, res[item].over_head_costs, res[item].product_sales, res[item].total_profit]
+                );
+            }
+
+            console.log(table.toString());
+            //     newRequest();  
+        }
+    );
 
 }
 
@@ -76,19 +104,35 @@ function createNewDept() {
         ])
         .then(answers => {
             connection.query(
-                "INSERT INTO departments (department_name, over_head_costs) VALUES (?, ?)",
-                [
-                    answers.departmentAdded,
-                    answers.newDeptOH,
-                ],
+                "SELECT EXISTS (SELECT * FROM departments WHERE ?) AS department",
+                {
+                    department_name: answers.departmentAdded
+                },
                 function (err, res) {
                     if (err) throw err;
-                    console.log(`\r\n Department  Added\r\n`);
-                    // recall the function to display the table if the user wants to place another order. End the connection otherwise
+                    if(res[0].department === 1) {
+                        console.log('That Department already exists! Try again'); 
+                        newRequest(); 
+                    } else {
+                        connection.query(
+                            "INSERT INTO departments (department_name, over_head_costs) VALUES (?, ?)",
+                            [
+                                answers.departmentAdded,
+                                answers.newDeptOH,
+                            ],
+                            function (err, res) {
+                                if (err) throw err;
+                                console.log(`\r\n Department Added\r\n`);
+                                newRequest(); 
+                            }
+                        );
+
+                    }
                 }
             );
         });
 }
+
 
 // use function to prevent repeating reests to choose another operation
 function newRequest() {
@@ -101,10 +145,10 @@ function newRequest() {
         },
     ]).then(response => {
         if (response.newRequest) {
-            supervisorDuty(); 
+            supervisorDuty();
         } else {
             console.log(`\r\n Have a nice day !\r\n`)
             connection.end();
-        } 
+        }
     });
 }
