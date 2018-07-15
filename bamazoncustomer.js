@@ -1,8 +1,11 @@
+// Bring in the packages required for the app
 let mysql = require('mysql');
 let inquirer = require('inquirer');
 let Table = require('cli-table2');
+
+// Connect to the database
 let connection = mysql.createConnection({
-	host: 'localhost',
+	host: 'localhost', 
 	user: 'root',
 	password: 'password',
 	database: 'bamazon',
@@ -11,14 +14,16 @@ let connection = mysql.createConnection({
 // Object used for the query 
 let purchaseOrder = {};
 
+// Connecton opens on page load and starts the first function
 connection.connect(function (err) {
 	if (err) throw err;
 	displayProduct();
 });
 
+// Displays the items from the products table
 function displayProduct() {
 	console.log(`\r\nWelcome to Bamazon! Here are your items to choose from!\r\n`);
-	
+
 	connection.query('SELECT id, product_name, price FROM products', function (err, res) {
 
 		// Table to display the current inventory of what is in the database
@@ -33,15 +38,17 @@ function displayProduct() {
 			);
 		}
 
-		console.log(table.toString());
+		console.log(`\r\n${table.toString()}\r\n`);
 
+		// Call the next function after the table is displayed
 		purchaseRequest();
 	});
 
 }; 
- 
+
+// Function asks the user for their purchase request and then pushes the results into the 'purchases' object. 
 function purchaseRequest() {
- 
+
 	inquirer
 		.prompt([
 			{
@@ -52,7 +59,7 @@ function purchaseRequest() {
 					if (isNaN(value) === false && value > 0) {
 						return true;
 					} else {
-						console.log('Invalid Query')
+						console.log(' Is an invalid query, please try again')
 						return false;
 					}
 				}
@@ -65,7 +72,7 @@ function purchaseRequest() {
 					if (isNaN(value) === false && value > 0) {
 						return true;
 					} else {
-						console.log('Invalid Query')
+						console.log(' Is an invalid query, please try again')
 						return false;
 					}
 				}
@@ -80,66 +87,68 @@ function purchaseRequest() {
 
 };
 
+// Function processes the request based on the object set by the results the user inputted from the first function
 function processRequest() {
-	let query = connection.query(
+	connection.query(
 		"SELECT * FROM products WHERE ?",
 		{
 			id: purchaseOrder.id
-		}, 
-		function (err, res) {
+		},
+		function (err, res) { 
 			if (err) throw err;
 			// if the result is empty then the order id is incorrect and cannot be found. Call purchase request function again.
 			if (!res.length) {
 				console.log(`\r\n That id does not exist, please try again\r\n`);
 				purchaseRequest();
-			// If the amount exceeds the inventory, user must choose another quantity. Call purchase request function again.
+				// If the amount exceeds the inventory, user must choose another quantity. Call purchase request function again.
 			} else if (res[0].stock_quantity < purchaseOrder.amount) {
 				console.log(`\r\n We are too low on quantity to fill your request please try another amount \r\n`);
 				purchaseRequest();
 			} else {
-			// Purchase can be processed, inform the user of the amount and update the database
+				// Purchase can be processed, inform the user of the amount and update the database
 				let newQuantity = res[0].stock_quantity - purchaseOrder.amount;
 				let saleRevenue = res[0].price * purchaseOrder.amount;
 				let totalRevenue = res[0].product_sales + saleRevenue;
-				console.log(`\r\n Your purchase of ${res[0].product_name} is $${(saleRevenue).toFixed(2)}\r\n`); 
+				console.log(`\r\n--------------------------Details-----------------------\r\n`);
+				console.log(`\r\n Purchase Item: ${res[0].product_name}`);
+				console.log(`\r\n Amount Purchased: ${purchaseOrder.amount}`);
+				console.log(`\r\n Purchase Price:  $${(saleRevenue).toFixed(2)}\r\n`);
 				connection.query(
 					"UPDATE products SET ? WHERE ?",
 					[
 						{
-							stock_quantity: newQuantity, 
+							stock_quantity: newQuantity,
 							product_sales: totalRevenue
 						},
 						{
 							id: purchaseOrder.id
 						}
-					],
-					function (err, res) {
-						if (err) throw err;
-						console.log(`\r\n Thankyou for placing your order!\r\n`);
-						// recall the function to display the table if the user wants to place another order. End the connection otherwise
-						inquirer.prompt([
-							{
-								type: 'confirm',
-								name: 'newOrder',
-								message: 'Do you want to place another order?',
-								default: true
-							},
-						]).then(response => {
-							if (response.newOrder) {
-								displayProduct(); 
-							} else {
-								console.log(`\r\n Thankyou for shopping at Bamazon, and have a nice day!\r\n`)
-								connection.end(); 
-							}
-						});
-					}
-				);
-			} 
+					], function (err, res) {
+						if (err) throw err; 
+						newRequest();    
+					});
+			}
+			
 		}
 	);
+
 }
 
-
-// SELECT * FROM departments D
-// LEFT OUTER JOIN (SELECT department_name, sum(product_sales) AS product_sales FROM products GROUP BY department_name) P
-// ON P.department_name = D.department_name; 
+// New request function for when the operations are done. Recalls the display function if the customer so chooses
+function newRequest() {
+	inquirer.prompt([
+		{
+			type: 'confirm',
+			name: 'newRequest',
+			message: 'Do you want to make another request?',
+			default: true
+		},
+	]).then(response => {
+		if (response.newRequest) {
+			displayProduct();
+		} else {
+			console.log(`\r\n Thankyou for shopping at Bamazon, and have a nice day!\r\n`)
+			connection.end();
+		}
+	});
+}
