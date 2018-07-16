@@ -91,27 +91,27 @@ This final app allows the user to perform all the duties of a supervisor. These 
 * Create new department
 * View Highest grossing department (Bonus)
 
-![supervisor duties](Images/supervisor1.PNG)
+![supervisor duties](images/supervisor1.PNG)
 
 ###### View sales by department
 ***
 
 This option allows the user to view the total profit of each department. The product sales value is gathered from the total sales of each department in the products table. 'Total Profit' is dynamically calculated and not hard coded into the database
 
-![supervisor view sales](Images/supervisor2.PNG)
+![supervisor view sales](images/supervisor2.PNG)
 
 ###### Create new department
 ***
 
 The supervisor can add a new department, and only has to include the name and over head costs. The supervisor is not allowed to enter a department that already exists. 
 
-![supervisor create dept](Images/supervisor3.PNG)
+![supervisor create dept](images/supervisor3.PNG)
 
 ###### View Highest grossing department
 ***
 
 This option presents the supervisor with a small table showing the department with the highest profit.
 
-![supervisor high grossing](Images/supervisor4.PNG) 
+![supervisor high grossing](images/supervisor4.PNG) 
 
 
