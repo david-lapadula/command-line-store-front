@@ -100,7 +100,7 @@ This option allows the user to view the total profit of each department. The pro
 
 ![supervisor view sales](images/supervisor2.PNG)
 
-###### Create new department
+###### Create new department 
 ***
 
 The supervisor can add a new department, and only has to include the name and over head costs. The supervisor is not allowed to enter a department that already exists. 

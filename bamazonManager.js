@@ -213,7 +213,7 @@ function addNewProduct() {
                                 console.log(`\n------------------Successfully added --------------`);
                                 console.log(`\n Product: ${answers.productAdded}`);
                                 console.log(`\r\n Department: ${answers.departmentAdded}`);
-                                console.log(`\r\n Quantity: ${answers.itemAmount}`); 
+                                console.log(`\r\n Quantity: ${answers.itemAmount}\r\n`); 
                                 newRequest();
                             }
                         );
