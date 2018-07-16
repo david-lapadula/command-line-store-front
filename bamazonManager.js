@@ -13,7 +13,6 @@ let connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n\n");
     chooseOperation();
 });
 
@@ -44,7 +43,7 @@ function chooseOperation() {
                     break;
                 default:
                     console.log(`\r\n Sorry there has been an error \r\n`);
-                    //Recurively call function if there is a problem to ensure app does not fail in the case that the switch statement does not read properly
+                    //Recursively call function if there is a problem to ensure app does not fail in the case that the switch statement does not read properly
                     chooseOperation();
             }
         });
@@ -53,31 +52,26 @@ function chooseOperation() {
 // Allows manager to see all the products and asks if he would like to perform another function
 function viewProducts() {
     connection.query('SELECT * FROM products', function (err, res) {
-
         // Table to display the current inventory of what is in the database
         table = new Table({
             head: ['Product ID', 'Product Name', 'Department Name', 'Product Price', 'Stock']
             , colWidths: [25, 25, 25]
-        });
-
+        }); 
         for (let item in res) {
             table.push(
                 [res[item].id, res[item].product_name, res[item].department_name, `$${res[item].price.toFixed(2)}`, res[item].stock_quantity]
             );
         };
-
         console.log(`\r\n${table.toString()}\r\n`);
-
         newRequest();
     });
 
 };
 
 // Shows all inventory with a quantity less than 50 and asks if he would like to perform another function
-function viewLowInventory() {
-    let lowInvQuery = 'SELECT * FROM products WHERE stock_quantity < 50';
-    connection.query(lowInvQuery, function (err, res) {
-
+function viewLowInventory() {  
+    connection.query('SELECT * FROM products WHERE stock_quantity < 50', function (err, res) {
+        if (err) throw err; 
         // Table to display the current inventory of what is in the database
         table = new Table({
             head: ['Product ID', 'Product Name', 'Department', 'Price', 'Stock']
@@ -90,14 +84,16 @@ function viewLowInventory() {
             );
         }
 
-        console.log(`${table.toString()}\r\n`);
+        //Displays the table with the low quantity items
+        console.log(`\r\n All items with a low inventory, or stock less than 50\r\n`)
+        console.log(`\r\n${table.toString()}\r\n`);
         newRequest();
     });
 };
 
 // Allows the manager to add product to any of the currently listed products in product table
 function addToInventory() {
-    //empty array filled with all products
+    //empty array to be filled with all products
     let products = []
     connection.query("SELECT product_name FROM products", function (err, res) {
         if (err) throw err;
@@ -129,17 +125,18 @@ function addToInventory() {
                 connection.query("UPDATE products SET stock_quantity = (stock_quantity + ?) WHERE product_name = ?;",
                     [answers.amountAdded, answers.productInc], function (err, res) {
                         if (err) throw err;
-                        console.log(`\r\n --------------Addition--------------\r\n`)
-                        console.log(`\r\n Product Increased: ${answers.productInc} \r\n`)
-                        console.log(`\r\n Amount Added: ${answers.amountAdded}  \r\n`)
+                        console.log(`\r\n --------------Addition--------------`)
+                        console.log(`\n Product Increased: ${answers.productInc}`)
+                        console.log(`\n Amount Added: ${answers.amountAdded}\r\n`)
                         newRequest();
                     });
             });
     });
 };
-
+ 
 // Function to allow the manager to add a new product. Ensure s/he is adding it to a department that exists and is not adding a product that is already in the table
 function addNewProduct() {
+    //Array to be filled with all the departments. 
     let choicesArray = [];
     connection.query(
         "SELECT departments.department_name AS Departments FROM departments;",
@@ -152,16 +149,10 @@ function addNewProduct() {
     );
 
     inquirer
-        .prompt([
-            {
-                name: "departmentAdded",
-                type: "list",
-                message: 'Which department would you like to add the product to?',
-                //use a list here to prevent the supervisor manager from entering a department that does not exist
-                choices: choicesArray,
-            },    {
+        .prompt([ 
+             {
                 name: "productAdded",
-                type: "input",
+                type: "input", 
                 message: "What product would you like to add?",
                 validate: function (value) {
                     if (value.length > 0 && value.match(/[^\s]+/i) && isNaN(value) === true) {
@@ -171,7 +162,13 @@ function addNewProduct() {
                         return false;
                     }
                 }
-            },{
+            }, {
+                name: "departmentAdded",
+                type: "list",
+                message: 'Which department would you like to add the product to?',
+                //use a list here to prevent the supervisor manager from entering a department that does not exist
+                choices: choicesArray,
+            }, {
                 name: "itemPrice",
                 type: "input",
                 message: "How much does the new item cost?",
@@ -186,7 +183,7 @@ function addNewProduct() {
             }, {
                 name: "itemAmount",
                 type: "input",
-                message: "How much quantity of the new item is there?",
+                message: "What is the incoming quantity of the new item?",
                 validate: function (value) {
                     if (isNaN(value) === false && value > 0) {
                         return true;
@@ -198,7 +195,7 @@ function addNewProduct() {
             }
         ])
         .then(answers => {
-            connection.query("SELECT EXISTS (SELECT product_name from products WHERE product_name = ?) AS Products ",
+            connection.query("SELECT EXISTS (SELECT product_name from products WHERE product_name = ?) AS Products",
                 [answers.productAdded], function (err, res) {
                     if (err) throw err;
                     if (res[0].Products === 0) {
@@ -213,12 +210,15 @@ function addNewProduct() {
                             ],
                             function (err, res) {
                                 if (err) throw err;
-                                console.log(`\r\n Product Added\r\n`);
+                                console.log(`\n------------------Successfully added --------------`);
+                                console.log(`\n Product: ${answers.productAdded}`);
+                                console.log(`\r\n Department: ${answers.departmentAdded}`);
+                                console.log(`\r\n Quantity: ${answers.itemAmount}`); 
                                 newRequest();
                             }
                         );
                     } else {
-                        console.log(`\r\n The Product you would like to add already exists, please try again \r\n`);
+                        console.log(`\r\n The Product you would like to add already exists, please try again`);
                         newRequest();
                     }
 
@@ -226,7 +226,7 @@ function addNewProduct() {
         });
 };
 
-// use function to prevent repeating reests to choose another operation
+// use function to prevent repeating requests to choose another operation
 function newRequest() {
     inquirer.prompt([
         {

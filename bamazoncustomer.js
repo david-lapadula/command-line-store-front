@@ -23,23 +23,18 @@ connection.connect(function (err) {
 // Displays the items from the products table
 function displayProduct() {
 	console.log(`\r\nWelcome to Bamazon! Here are your items to choose from!\r\n`);
-
-	connection.query('SELECT id, product_name, price FROM products', function (err, res) {
-
+	connection.query('SELECT * FROM products', function (err, res) {
 		// Table to display the current inventory of what is in the database
 		table = new Table({
-			head: ['Product ID', 'Product Name', 'Price']
-			, colWidths: [25, 25, 25]
-		});
-
+			head: ['Product ID', 'Product Name', 'Price', 'Department', 'Stock']
+			, colWidths: [25, 25, 25, 25, 25]
+		}); 
 		for (let item in res) {
 			table.push(
-				[res[item].id, res[item].product_name, `$${res[item].price.toFixed(2)}`]
+				[res[item].id, res[item].product_name, `$${res[item].price.toFixed(2)}`, res[item].department_name, res[item].stock_quantity]
 			);
 		}
-
 		console.log(`\r\n${table.toString()}\r\n`);
-
 		// Call the next function after the table is displayed
 		purchaseRequest();
 	});
@@ -48,7 +43,6 @@ function displayProduct() {
 
 // Function asks the user for their purchase request and then pushes the results into the 'purchases' object. 
 function purchaseRequest() {
-
 	inquirer
 		.prompt([
 			{
@@ -79,7 +73,7 @@ function purchaseRequest() {
 			}
 		])
 		.then(function (answer) {
-			//update the purchase order object based on the user input
+			//update the purchase order object based on the user input and then process the request
 			purchaseOrder.id = answer.productID;
 			purchaseOrder.amount = answer.unitsPurchased;
 			processRequest();
@@ -109,7 +103,7 @@ function processRequest() {
 				let newQuantity = res[0].stock_quantity - purchaseOrder.amount;
 				let saleRevenue = res[0].price * purchaseOrder.amount;
 				let totalRevenue = res[0].product_sales + saleRevenue;
-				console.log(`\r\n--------------------------Details-----------------------\r\n`);
+				console.log(`\r\n--------------------------Details-----------------------`);
 				console.log(`\r\n Purchase Item: ${res[0].product_name}`);
 				console.log(`\r\n Amount Purchased: ${purchaseOrder.amount}`);
 				console.log(`\r\n Purchase Price:  $${(saleRevenue).toFixed(2)}\r\n`);
@@ -133,7 +127,7 @@ function processRequest() {
 	);
 
 }
-
+  
 // New request function for when the operations are done. Recalls the display function if the customer so chooses
 function newRequest() {
 	inquirer.prompt([
@@ -147,7 +141,7 @@ function newRequest() {
 		if (response.newRequest) {
 			displayProduct();
 		} else {
-			console.log(`\r\n Thankyou for shopping at Bamazon, and have a nice day!\r\n`)
+			console.log(`\r\n Thankyou for shopping at Bamazon, and have a nice day!`)
 			connection.end();
 		}
 	});

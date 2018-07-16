@@ -5,9 +5,8 @@ VALUES ('clothing', 5000),
 ('books', 2500),  
 ('electronics', 7000),  
 ('food', 1000),  
-('tools', 10000);    
-
-
+('tools', 10000);      
+ 
 INSERT INTO products (id, product_name, department_name, price, stock_quantity)
 VALUES (1, 'jeans', 'clothing', 20, 50), 
 (2, '1984', 'books', 25, 150), 
