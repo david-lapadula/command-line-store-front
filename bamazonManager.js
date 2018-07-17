@@ -192,7 +192,7 @@ function addNewProduct() {
                         return false;
                     }
                 }
-            }
+            } 
         ])
         .then(answers => {
             connection.query("SELECT EXISTS (SELECT product_name from products WHERE product_name = ?) AS Products",

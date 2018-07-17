@@ -51,11 +51,13 @@ function supervisorDuty() {
 function viewProductSales() {
     //Query calculates total profit on the fly and joins the tables together where the departments match
     connection.query(
-        `SELECT D.department_id, D.department_name, D.over_head_costs, P.product_sales,
-        (P.product_sales - over_head_costs) AS total_profit
+        `select *,
+		(product_sales - over_head_costs) AS total_profit  from (
+        SELECT D.department_id, D.department_name, D.over_head_costs, If(P.product_sales is null, 0, P.product_sales) AS product_sales
         FROM departments D
         LEFT JOIN (SELECT department_name, sum(product_sales) AS product_sales FROM products GROUP BY department_name) P
-        ON P.department_name = D.department_name`, 
+        ON P.department_name = D.department_name
+        ) as total_table`, 
         function (err, res) {
             if (err) throw err;
             let keys = Object.keys(res[0]);
