@@ -70,7 +70,7 @@ This allows the manager to view all products with low quantity. Because of the l
 ###### Add to Inventory
 ***
 
-This allows the manager to add stock to an already existing product. A list of products is provided to prevent adding stock to a non - existent product. Upon success a message is displayed to the user informing them the addition has been made with the details of the update. 
+This allows the manager to add stock to an already existing product. A list of products is provided to prevent adding stock to a non - existent product. Upon success a message is displayed to the user informing them that the addition has been made with the details of the update. 
 
 ![Manager add to inventory](images/manager4.PNG)
 
