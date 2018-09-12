@@ -2,7 +2,7 @@
 let mysql = require('mysql');
 let inquirer = require('inquirer');
 let Table = require('cli-table2');
-
+ 
 //Connection to the database
 let connection = mysql.createConnection({
     host: '127.0.0.1',
@@ -26,7 +26,7 @@ function chooseOperation() {
                 message: 'Which operation would you like to perform?',
                 choices: ['View products for sale', 'View low inventory', 'Add to inventory', 'Add new product']
             }
-        ])
+        ]) 
         .then(answers => {
             switch (answers.managerChoice) {
                 case 'View products for sale':
