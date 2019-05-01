@@ -1,7 +1,6 @@
 # Bamazon Command Line App
 
 ### Summary
-***
 
 This is a shopping app which leverages mySQL and node.js with 3 levels. In level one the user acts as a customer by making purchases while the database is updated in the background to account for sales and depleting inventory. In level two the user acts as a manager and has the ability to add items to the inventory and and check various quantities. Level three is for the supervisor, where the user can view the total profits from each department, check the department that is performing the best, and even add departments to the database. General error checking is in place for all user inputs. If the required field is a number, the user must input a number and cannot input a negative integer, and if a word is required than a number is not accpeted. Duplicates are also not accepted when entering new information into the database. Each app also allows the user to constinue making transactions after one is completed using recursion. 
 
