@@ -8,7 +8,7 @@ This is a shopping app which leverages mySQL and node.js with 3 levels. In level
 ### Prerequisites
 
 Before using the app please install node.js, mySQL server, and mySQL workbench. 
-After this is completed use the 'schema.sql' and 'seeds.sql' to populated the database
+After this is completed use the 'schema.sql' and 'seeds.sql' to populated the database.
 * [Node](https://nodejs.org/en/download/)
 * [mySql server](https://dev.mysql.com/doc/refman/8.0/en/) 
 * [mySql workbench](https://dev.mysql.com/doc/workbench/en/) 
@@ -16,10 +16,10 @@ After this is completed use the 'schema.sql' and 'seeds.sql' to populated the da
 ## Usage
 
 ```
-1. Clone repository
-2. npm install
-3. cd bamazon-sql-node
-4. run 'node [file name of app you want to use]' in the command line
+1. Clone repository.
+2. npm install.
+3. cd bamazon-sql-node.
+4. run 'node [file name of app you want to use]' in the command line.
 ```
 
 ## Built
@@ -95,7 +95,7 @@ This final app allows the user to perform all the duties of a supervisor. These 
 ###### View sales by department
 ***
 
-This option allows the user to view the total profit of each department. The product sales value is gathered from the total sales of each department in the products table. 'Total Profit' is dynamically calculated and not hard coded into the database
+This option allows the user to view the total profit of each department. The product sales value is gathered from the total sales of each department in the products table. 'Total Profit' is dynamically calculated and not hard coded into the database.
 
 ![supervisor view sales](images/supervisor2.PNG)
 
