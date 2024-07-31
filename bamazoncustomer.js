@@ -4,12 +4,7 @@ let inquirer = require('inquirer');
 let Table = require('cli-table2');
 
 // Connect to the database
-let connection = mysql.createConnection({
-	host: 'localhost', 
-	user: 'root',
-	password: 'password',
-	database: 'bamazon',
-});
+let connection = require('./connection');
 
 // Object used for the query 
 let purchaseOrder = {};

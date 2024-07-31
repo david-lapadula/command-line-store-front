@@ -1,7 +1,7 @@
 {
-  "name": "week12-bamazonsql",
+  "name": "storefrontsql",
   "version": "1.0.0",
-  "description": "Week-12-Assignment Bamazon",
+  "description": "storefrontsql",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

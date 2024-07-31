@@ -1,15 +1,9 @@
 // Bring in packages that are required for this app
-let mysql = require('mysql');
 let inquirer = require('inquirer');
 let Table = require('cli-table2');
 
 // Connect to the database
-let connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'password',
-    database: 'bamazon',
-});
+let connection = require('./connection');
 
 //Use database connection and call the supervisor duty, which allows the user to choose what to do
 connection.connect(function (err) {

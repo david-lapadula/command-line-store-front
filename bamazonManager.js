@@ -3,13 +3,8 @@ let mysql = require('mysql');
 let inquirer = require('inquirer');
 let Table = require('cli-table2');
  
-//Connection to the database
-let connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: 'root',
-    password: 'password',
-    database: 'bamazon',
-});
+// Connect to the database
+let connection = require('./connection');
 
 connection.connect(function (err) {
     if (err) throw err;
