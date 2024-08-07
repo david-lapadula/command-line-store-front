@@ -28,7 +28,7 @@ Command line application that simulates an inventory management system, allowing
 
 ```bash
 git clone https://github.com/DavidLapadula/StoreFrontSQL.git
-cd storefrontsQL
+cd storefrontsql
 ```
 4. Open a terminal in the root directory and run: 
 ```
