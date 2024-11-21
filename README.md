@@ -3,8 +3,8 @@
 ## Table of contents
 1. [Description](#description)
 2. [Technology](#technology)
-2. [Installation](#installation)
-3. [Usage](#usage)
+3. [Installation](#installation)
+4. [Usage](#usage)
 
 ## Description
 
