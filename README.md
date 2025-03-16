@@ -27,8 +27,8 @@ Command line application that simulates an inventory management system, allowing
 3. Clone the repository to your local machine. 
 
 ```bash
-git clone https://github.com/DavidLapadula/StoreFrontSQL.git
-cd storefrontsql
+git clone https://github.com/DavidLapadula/command-line-store-front.git
+cd command-line-store-front
 ```
 4. Open a terminal in the root directory and run: 
 ```
